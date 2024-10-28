@@ -1,0 +1,225 @@
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('StarterGui')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local VirtualInputManager = game:GetService('VirtualInputManager')
+local GuiService = game:GetService('GuiService')
+local TweenService = game:GetService('TweenService')
+
+local LocalPlayer = Players.LocalPlayer
+
+local Enabled = false
+local Rod = false
+local Casted = false
+local Progress = false
+local Finished = false
+
+-- Create Toggle Button
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+ToggleButton.Parent = ScreenGui
+
+ToggleButton.Size = UDim2.new(0, 45, 0, 45)
+ToggleButton.Position = UDim2.new(0.55, 0, 0.45, 0)
+ToggleButton.Text = "🌟"
+ToggleButton.BackgroundTransparency = 0.5
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.Draggable = true
+ToggleButton.Active = true
+ToggleButton.TextSize = 14
+ToggleButton.TextStrokeTransparency = 0.5
+
+UICorner.CornerRadius = UDim.new(0, 5)
+UICorner.Parent = ToggleButton
+
+UIStroke.Parent = ToggleButton
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Thickness = 2
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+function UpdateButtonAppearance()
+    if Enabled then
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    end
+end
+
+ToggleButton.MouseButton1Click:Connect(function()
+    Enabled = not Enabled
+    
+    -- Allow character to move freely regardless of the button state
+    if Enabled then
+        UpdateButtonAppearance()
+    else
+        Finished = false
+        Progress = false
+        GuiService.SelectedObject = nil
+       
+        if Rod then
+            Rod.events.reset:FireServer()
+        end
+        UpdateButtonAppearance()
+    end
+end)
+
+LocalPlayer.Character.ChildAdded:Connect(function(Child)
+    if Child:IsA('Tool') and Child.Name:lower():find('rod') then
+        Rod = Child
+    end
+end)
+
+LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
+    if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
+        if Enabled then
+            task.wait(0.1)
+            GuiService.SelectedObject = Descendant
+            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+        end
+    end
+end)
+
+LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
+    if Descendant.Name == 'reel' then
+        Finished = false
+        Progress = false
+    end
+end)
+
+coroutine.wrap(function()
+    while true do
+        if Enabled and not Progress then
+            if Rod then
+                Progress = true
+                task.wait(0.5)
+                if Enabled then
+                    Rod.events.reset:FireServer()
+                end
+            end
+        end
+   
+        task.wait()
+    end
+end)()
+
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('StarterGui')
+
+local LocalPlayer = Players.LocalPlayer
+
+-- Create One-Click Button for Sell Action
+local ScreenGui = Instance.new("ScreenGui")
+local SellButton = Instance.new("TextButton")
+local SellUICorner = Instance.new("UICorner")
+local SellUIStroke = Instance.new("UIStroke")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+SellButton.Parent = ScreenGui
+
+SellButton.Size = UDim2.new(0, 45, 0, 45)
+SellButton.Position = UDim2.new(0.85, 0, 0.45, 0)
+SellButton.Text = "💰"
+SellButton.BackgroundTransparency = 0.5
+SellButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SellButton.Draggable = true
+SellButton.Active = true
+SellButton.TextSize = 14
+SellButton.TextStrokeTransparency = 0.5
+
+SellUICorner.CornerRadius = UDim.new(0, 5)
+SellUICorner.Parent = SellButton
+
+SellUIStroke.Parent = SellButton
+SellUIStroke.Color = Color3.fromRGB(255, 255, 255)
+SellUIStroke.Thickness = 2
+SellUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+SellButton.MouseButton1Click:Connect(function()
+    workspace.world.npcs.Synph.synph.sell:InvokeServer()
+end)
+
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('StarterGui')
+
+local LocalPlayer = Players.LocalPlayer
+
+-- Create One-Click Button for Cast Action
+local ScreenGui = Instance.new("ScreenGui")
+local CastButton = Instance.new("TextButton")
+local CastUICorner = Instance.new("UICorner")
+local CastUIStroke = Instance.new("UIStroke")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+CastButton.Parent = ScreenGui
+
+CastButton.Size = UDim2.new(0, 45, 0, 45)
+CastButton.Position = UDim2.new(0.75, 0, 0.45, 0)
+CastButton.Text = "🎣"
+CastButton.BackgroundTransparency = 0.5
+CastButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CastButton.Draggable = true
+CastButton.Active = true
+CastButton.TextSize = 14
+CastButton.TextStrokeTransparency = 0.5
+
+CastUICorner.CornerRadius = UDim.new(0, 5)
+CastUICorner.Parent = CastButton
+
+CastUIStroke.Parent = CastButton
+CastUIStroke.Color = Color3.fromRGB(255, 255, 255)
+CastUIStroke.Thickness = 2
+CastUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+CastButton.MouseButton1Click:Connect(function()
+    local args = {
+        [1] = 200
+    }
+    local rod = LocalPlayer.Character:FindFirstChild("Flimsy Rod")
+    if rod and rod:FindFirstChild("events") and rod.events:FindFirstChild("cast") then
+        rod.events.cast:FireServer(unpack(args))
+    end
+end)
+
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('StarterGui')
+
+local LocalPlayer = Players.LocalPlayer
+
+-- Create One-Click Button
+local ScreenGui = Instance.new("ScreenGui")
+local OneClickButton = Instance.new("TextButton")
+local OneClickUICorner = Instance.new("UICorner")
+local OneClickUIStroke = Instance.new("UIStroke")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+OneClickButton.Parent = ScreenGui
+
+OneClickButton.Size = UDim2.new(0, 45, 0, 45)
+OneClickButton.Position = UDim2.new(0.65, 0, 0.45, 0)
+OneClickButton.Text = "🐟"
+OneClickButton.BackgroundTransparency = 0.5
+OneClickButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+OneClickButton.Draggable = true
+OneClickButton.Active = true
+OneClickButton.TextSize = 14
+OneClickButton.TextStrokeTransparency = 0.5
+
+OneClickUICorner.CornerRadius = UDim.new(0, 5)
+OneClickUICorner.Parent = OneClickButton
+
+OneClickUIStroke.Parent = OneClickButton
+OneClickUIStroke.Color = Color3.fromRGB(255, 255, 255)
+OneClickUIStroke.Thickness = 2
+OneClickUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+OneClickButton.MouseButton1Click:Connect(function()
+    local args = {
+        [1] = 100,
+        [2] = false
+    }
+    game:GetService("ReplicatedStorage").events.reelfinished:FireServer(unpack(args))
+end)
