@@ -1,1 +1,2 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/JustLevel/goombahub/main/fisch.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Lythicals/script/main/Fisch%20Beta.lua",true))()
