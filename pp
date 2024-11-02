@@ -14,3 +14,9 @@ while amount > zero do
     task.wait(0.1)
     zero = zero + 1
 end
+
+
+while true do
+task.wait(0.1)
+game.Players.LocalPlayer.Character["Crab Cage"].Deploy:FireServer({CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame})
+end
